@@ -1,0 +1,26 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  url?: string;
+  imgUrl?: string;
+  sourceUrl?: string;
+}
+const { id, title, url, imgUrl, sourceUrl } = Astro.props;
+---
+<div class="window" id={id} data-window>
+  <div class="window__titlebar" data-drag-handle>
+    <div>
+      {sourceUrl && <a href={sourceUrl} target="_blank">[source]</a>}
+    </div>
+    <span class="window__title">{title}</span>
+    <button class="window__close text" data-close-window>[close]</button>
+  </div>
+  <div class="window__content">
+    <div class="window__image">
+      {imgUrl && <img src={imgUrl} />}
+      {url && <div class="window__visit"><a href={url} target="_blank">[visit]</a></div>}
+    </div>
+    <slot />
+  </div>
+</div>

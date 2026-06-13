@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import Pane from '../components/Pane.astro'
+import Window from '../components/Window.astro'
 ---
 <BaseLayout>
   <Pane id="code" type="middle">
@@ -28,24 +29,63 @@ import Pane from '../components/Pane.astro'
 
   <Pane id="tools" type="right">
     <p>
-      Here are some somewhat useful things I have created. I will add descriptions soon. For now you can just click through and look.
+      Somewhat useful things I have created. I like creating useful things for extremely small audiences.
     </p>
     <p>
       <ul>
-        <li>
-          <a href="https://tomodex-phi.vercel.app/" target="_blank">
-            Tomodex
-          </a>
-        </li>
-        <li>
-          <a href="https://kaki-cms.vercel.app/" target="_blank">Kaki CMS</a>
-        </li>
-        <li>
-          <a href="https://moneylogs-89ebf.web.app/" target="_blank">moneylogs</a>
-        </li>
+        <li><button class="text" data-open-window="window-tomodex">Tomodex</button></li>
+        <li><button class="text" data-open-window="window-kaki">Kaki CMS</button></li>
+        <li><button class="text" data-open-window="window-moneylogs">moneylogs</button></li>
       </ul>
     </p>
   </Pane>
+
+  <Window
+    id="window-tomodex"
+    title="Tomodex"
+    url="https://tomodex-phi.vercel.app/"
+    imgUrl="/screen-tomodex.jpg"
+    sourceUrl="https://github.com/naobot/tomodex"
+    >
+    <p>
+      Many of my friends live in different cities all around the world. I love sending cards and little packages and things but I am always asking for people's mailing addresses again and again.
+    </p>
+    <p>
+      I also want to be better about wishing my friends a happy birthday.
+    </p>
+    <p>
+      To solve both of these problems, I created <strong>Tomodex</strong> as a digital rolodex for myself, as I prefer a browser-based solution as opposed to native address book or contacts apps tightly coupled to particular platforms or ecosystems. Tomodex also allows for custom fields for any other sort of memos you want to keep on your friends, like remembering their hometowns or favourite drink.
+    </p>
+    <p>
+      The web app is already useable but is still undergoing continued development, with plans to expand to a mobile app.
+    </p>
+  </Window>
+
+  <Window
+    id="window-kaki"
+    title="Kaki CMS"
+    url="https://kaki-cms.vercel.app/"
+    imgUrl="/screen-kakicms.jpg"
+    sourceUrl="https://github.com/naobot/kaki-cms"
+    >
+    <p>A lightweight CMS custom built to suit the personal website work I do.</p>
+    <p>I was previously using free headless CMSs like Forestry.io and Decap CMS, but these were invariably not robust enough in the areas I needed them to be, and sometimes overkill in other areas that resulted in confusing UX for my non-developer clients.</p>
+    <p>
+      I developed Kaki CMS to work exactly with my own personal workflow around building such websites, providing a better user experience for my clients and also providing me with a single portal to manage the CMS connections of all my clients.
+    </p>
+  </Window>
+
+  <Window
+    id="window-moneylogs"
+    title="moneylogs"
+    url="https://moneylogs-89ebf.web.app/"
+    imgUrl="/screen-moneylogs.jpg"
+    sourceUrl="https://github.com/naobot/moneylogs"
+    >
+    <p>A private microblogging social media experience created especially for a friend group of mine who got really into doing our own version of Refinery29's Money Diaries.</p>
+    <p>Share your day-to-day expenditures with a closed group of friends, but also get a peek into the lives around those spending habits.</p>
+    <p>Open beta and still under active development.</p>
+  </Window>
 
   <Pane id="sketches" type="right">
     <p>
@@ -76,3 +116,17 @@ import Pane from '../components/Pane.astro'
     </p>
   </Pane>
 </BaseLayout>
+
+<script>
+  import '../scripts/window.ts';
+
+  document.querySelectorAll<HTMLElement>('[data-open-window]').forEach(button => {
+    button.addEventListener('click', () => {
+      const targetId = button.dataset.openWindow;
+      if (!targetId) return;
+      const win = document.getElementById(targetId);
+      if (!win) return;
+      win.style.display = 'flex';
+    });
+  });
+</script>

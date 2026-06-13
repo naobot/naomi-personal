@@ -11,12 +11,15 @@ $cursor-color: #0049ff;
   border-radius: 50%;
   background: radial-gradient(circle, var(--cursor-color) 1%, transparent 50%);
   transition: background 500ms ease-in-out;
-  opacity: 0.8;
+  opacity: 0;
 }
 
 @mixin day-theme($bg, $fg, $cc) {
   background: $bg;
   color: $fg;
+  --color-bg: #{$bg};
+  --color-fg: #{$fg};
+  --color-cursor: #{$cursor-color};
 
   .hover-image {
     text-decoration: underline dotted;
@@ -44,6 +47,12 @@ $cursor-color: #0049ff;
 
   ::selection {
     background-color: #{$cc};
+  }
+
+  .window {
+    -webkit-box-shadow:0 0 10px #{$cc};
+    -moz-box-shadow: 0 0 10px #{$cc};
+    box-shadow:0 0 10px #{$cc};
   }
 }
 

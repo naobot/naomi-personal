@@ -6,7 +6,7 @@ import '../styles/daylight.scss'
 interface Props {
   title?: string;
 }
-const { title = 'nao.world' } = Astro.props;
+const { title = 'nnao.world' } = Astro.props;
 ---
 <html lang="en">
   <head>
@@ -17,7 +17,11 @@ const { title = 'nao.world' } = Astro.props;
     <title>{title}</title>
   </head>
 
-  <body>
+  <body class="no-transition">
+    <script is:inline>
+      document.body.classList.add(`day-${new Date().getHours()}`);
+    </script>
+
     <div id="cursor"></div>
     <div id="hover-image-self" class="hover-image-target">
       <img src="/self.jpg">
@@ -94,7 +98,6 @@ const { title = 'nao.world' } = Astro.props;
         }
       }
 
-      setDayClass(); // initialise first load
       setInterval(setDayClass, 1000);
 
       /* cursor */
@@ -103,6 +106,7 @@ const { title = 'nao.world' } = Astro.props;
 
       document.addEventListener('mousemove', (e) => {
         if (!cursor) return;
+        cursor.style.opacity = '0.8';
         cursor.style.translate = `${e.clientX - 16}px ${e.clientY - 16}px`;
 
         if (activeHoverImage) {
