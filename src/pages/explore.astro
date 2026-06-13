@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Pane from '../components/Pane.astro'
+
+const people = [
+  {
+    name: 'yogo.style',
+    url: 'https://yogo.style/'
+  },
+  {
+    name: 'qwook.io',
+    url: 'https://qwook.io/'
+  },
+  {
+    name: 'nicole.pizza',
+    url: 'https://nicole.pizza/'
+  },
+  {
+    name: 'kitasenju design',
+    url: 'https://kitasenjudesign.com/'
+  }
+]
+
+const places = [
+  {
+    name: 'special.fish',
+    url: 'https://special.fish/garden'
+  }
+]
+---
+
+<BaseLayout>
+  <Pane id="explore" type="middle">
+    <h2>Surf the world wide web</h2>
+    <p>
+      <ul>
+        <li>
+          <button class="text" data-view="explore-people">
+            people
+          </button>
+        </li>
+        <li>
+          <button class="text" data-view="explore-places">
+            places
+          </button>
+        </li>
+      </ul>
+    </p>
+  </Pane>
+
+  <Pane id="explore-people" type="right">
+    <p>
+      Here are some people doing cool and interesting things on the Internet.
+    </p>
+    <p>
+      <ul>
+        {people.map(person => (
+          <li>
+            <a href={person.url} target="_blank">{person.name}</a>
+          </li>
+        ))}
+      </ul>
+    </p>
+  </Pane>
+
+  <Pane id="explore-places" type="right">
+    <p>
+      Why not voyage to some interesting parts of cyberspace?
+    </p>
+    <p>
+      <ul>
+        {places.map(place => (
+          <li>
+            <a href={place.url} target="_blank">{place.name}</a>
+          </li>
+        ))}
+      </ul>
+    </p>
+  </Pane>
+</BaseLayout>

@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Pane from '../components/Pane.astro'
+---
+<BaseLayout>
+  <Pane id="code" type="middle">
+    <h2>Code</h2>
+    <p>
+      <ul>
+        <li>
+          <button class="text" data-view="tools">
+            tools
+          </button>
+        </li>
+        <li>
+          <button class="text" data-view="sketches">
+            sketches
+          </button>
+        </li>
+        <li>
+          <button class="text" data-view="collabs">
+            collabs
+          </button>
+        </li>
+      </ul>
+    </p>
+  </Pane>
+
+  <Pane id="tools" type="right">
+    <p>
+      Here are some somewhat useful things I have created. I will add descriptions soon. For now you can just click through and look.
+    </p>
+    <p>
+      <ul>
+        <li>
+          <a href="https://tomodex-phi.vercel.app/" target="_blank">
+            Tomodex
+          </a>
+        </li>
+        <li>
+          <a href="https://kaki-cms.vercel.app/" target="_blank">Kaki CMS</a>
+        </li>
+        <li>
+          <a href="https://moneylogs-89ebf.web.app/" target="_blank">moneylogs</a>
+        </li>
+      </ul>
+    </p>
+  </Pane>
+
+  <Pane id="sketches" type="right">
+    <p>
+      These are some small-scale web-based dabblings and experiments.
+    </p>
+    <p>
+      <ul>
+        <li>
+          modal experiment 1 <em>(sharing soon)</em>
+        </li>
+      </ul>
+    </p>
+  </Pane>
+
+  <Pane id="collabs" type="right">
+    <p>
+      Here are some projects I have contributed to as a web developer and designer. If you are a creator with web needs, feel free to reach out. Let's work together.
+    </p>
+    <p>
+      <ul>
+        <li>
+          <a href="https://amylam.me/projects/make-believe-bathroom.htm" target="_blank">Make-Believe Bathroom</a>
+        </li>
+        <li>
+          <a href="https://www.amygottung.com/" target="_blank">Amy Gottung</a>
+        </li>
+      </ul>
+    </p>
+  </Pane>
+</BaseLayout>

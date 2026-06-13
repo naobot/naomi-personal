@@ -1,0 +1,20 @@
+---
+interface Props {
+  id: string;
+  type: 'middle' | 'right';
+  grow?: boolean;
+}
+const { id, type, grow = false } = Astro.props;
+---
+<div
+  class:list={[
+    'pane',
+    `pane-${type}`,
+    { 'pane--togglable' : type === 'right'},
+    { 'pane-middle--grow': grow }
+  ]}
+  data-panetype={type}
+  id={id}
+>
+  <slot />
+</div>

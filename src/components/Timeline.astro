@@ -1,0 +1,14 @@
+---
+interface Props {
+  entries: { year: string; description: string }[];
+}
+const { entries } = Astro.props;
+---
+<div class="timeline">
+  {entries.map(entry => (
+    <div class="timeline__row">
+      <div>{entry.year}</div>
+      <div>{entry.description}</div>
+    </div>
+  ))}
+</div>

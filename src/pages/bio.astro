@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Timeline from '../components/Timeline.astro'
+import Pane from '../components/Pane.astro'
+
+const timelineEntries = [
+  { year: '1992', description: 'born in Toronto' },
+  { year: '2010-2015', description: 'Computer Science & Linguistics, University of Toronto' },
+  { year: '2017-2018', description: 'Kyoto Institute of Culture & Language' },
+  { year: '2024', description: 'moved to Tokyo' },
+];
+---
+
+<BaseLayout>
+  <Pane id="bio" type="middle" grow>
+    <h2>Naomi Cui</h2>
+    <Timeline entries={timelineEntries} />
+  </Pane>
+</BaseLayout>
