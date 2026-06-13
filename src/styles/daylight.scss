@@ -1,0 +1,65 @@
+$cursor-color: #0049ff;
+
+#cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--cursor-color) 1%, transparent 50%);
+  transition: background 500ms ease-in-out;
+  opacity: 0.8;
+}
+
+@mixin day-theme($bg, $fg, $cc) {
+  background: $bg;
+  color: $fg;
+
+  a:link, a:hover, a:visited, a:active, button.text {
+    color: $fg;
+  }
+
+  a:hover, button.text:hover {
+    text-shadow: 0 0 10px $cc;
+  }
+
+  .pane-middle, .pane-right {
+    border-left: 1px dotted $fg;
+  }
+
+  #cursor {
+    --cursor-color: #{$cc};
+  }
+}
+
+body {
+  transition: background 500ms ease-in-out;
+
+  &.day-1  { @include day-theme(#061826, #f9e7d9, #e0f7f3); }
+  &.day-2  { @include day-theme(#26333E, #f5f5f5, #efffbb); }
+  &.day-3  { @include day-theme(#454D55, #e2dcd5, #d2ff3f); }
+  &.day-4  { @include day-theme(#64676C, #cdcac5, #3aefdb); }
+  &.day-5  { @include day-theme(#838183, #e5e5e5, #d40bd9); }
+  &.day-6  { @include day-theme(#C1B5B1, #2f383b, #ff2bcd); }
+  &.day-7  { @include day-theme(#E0CFC8, #061826, #ab36ff); }
+  &.day-8  { @include day-theme(#FFE9DF, #061826, #5b0efc); }
+  &.day-9  { @include day-theme(#F9E7E9, #061826, #320efc); }
+  &.day-10 { @include day-theme(#F3E5F2, #0e0e0e, #0e48fc); }
+  &.day-11 { @include day-theme(#F3EAF4, #0e0e0e, #259cff); }
+  &.day-12 { @include day-theme(#F2EFF5, #0e0e0e, #25f1ff); }
+  &.day-13 { @include day-theme(#F1F4F7, #0e0e0e, #25ff88); }
+  &.day-14 { @include day-theme(#F1F6F8, #0e0e0e, #c8ff90); }
+  &.day-15 { @include day-theme(#F0F8F8, #0f0707, #fff134); }
+  &.day-16 { @include day-theme(#E7E9F0, #18160f, #ff5e00); }
+  &.day-17 { @include day-theme(#E4E3E9, #1b1c16, #ff3100); }
+  &.day-18 { @include day-theme(#E0DCE1, #1f231e, #ff6900); }
+  &.day-19 { @include day-theme(#BAAFB8, #262826, #ffb61f); }
+  &.day-20 { @include day-theme(#8D8A94, #464643, #ffbd36); }
+  &.day-21 { @include day-theme(#60646F, #e4e1d9, #ffe936); }
+  &.day-22 { @include day-theme(#333E4B, #dbd3cb, #fdffa5); }
+  &.day-23 { @include day-theme(#1D2B39, #e2d4c6, #dfffdb); }
+  &.day-0, &.day-24 { @include day-theme(#122230, #edddcf, #d6f1e5); }
+}

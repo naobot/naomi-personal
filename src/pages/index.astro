@@ -1,5 +1,6 @@
 ---
 import '../styles/global.scss'
+import '../styles/daylight.scss'
 ---
 
 <html lang="en">
@@ -11,7 +12,10 @@ import '../styles/global.scss'
 		<meta name="generator" content={Astro.generator} />
 		<title>nao.world</title>
 	</head>
-	<body>
+
+	<body class="day-1">
+		<div id="cursor"></div>
+
 		<div id="root">
 			<div class="pane pane-left">
 				<div class="pane-left__header">
@@ -139,6 +143,7 @@ import '../styles/global.scss'
 </html>
 
 <script>
+	/* panel toggle */
   const buttons = document.querySelectorAll<HTMLElement>('button[data-view]');
   const allPanes = document.querySelectorAll<HTMLElement>('.pane--togglable');
 
@@ -168,4 +173,27 @@ import '../styles/global.scss'
 	    if (!isVisible) targetPane.style.display = 'block';
 	  });
 	});
+</script>
+
+<script>
+	/* cursor */
+	const cursor = document.getElementById('cursor');
+
+	document.addEventListener('mousemove', (e) => {
+		if (!cursor) return
+	  cursor.style.translate = `${e.clientX - 16}px ${e.clientY - 16}px`;
+	});
+
+	/* daylight setter */
+	const bodyElement = document.querySelector('body');
+
+	setInterval(() => {
+		const now = new Date();
+		// const currentHour = now.getHours();
+		const currentHour = now.getMinutes() % 24;
+
+		if (bodyElement?.className && bodyElement.className !== `day-${currentHour}`) {
+			bodyElement.className = `day-${currentHour}`;
+		}
+	}, 1000);
 </script>
