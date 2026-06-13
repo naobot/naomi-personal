@@ -42,7 +42,8 @@
     text-align: center;
 
     img {
-      width: 420px;
+      max-width: 420px;
+      width: 90vw;
       border: 1px solid currentColor;
     }
   }
