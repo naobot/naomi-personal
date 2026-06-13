@@ -1,5 +1,5 @@
 ---
-
+import '../styles/global.scss'
 ---
 
 <html lang="en">
@@ -12,45 +12,114 @@
 		<title>nao @ world</title>
 	</head>
 	<body>
-		<div class="pane-left">
-			<h1>nao @ world</h1>
-			<section class="pane-left__top">
-				<div>
-					I am a human being based in Tokyo who <button class="text" data-view="code">codes</button>, <button class="text" data-view="language">translates</button>, and dabbles in a lot of stuff.
+		<div id="root">
+			<div class="pane pane-left">
+				<div class="pane-left__header">
+					<h1>nao @ world</h1>
+					<nav>
+						<button class="text" data-view="bio">bio</button>
+					</nav>
 				</div>
+
+				<section class="pane-left__main">
+					<p>
+						I am a human being based in Tokyo who <button class="text" data-view="code">codes</button>, <button class="text" data-view="language">translates</button>, and dabbles in various things.
+					</p>
+					<p>
+						I am interested in randomness, play, light, and sound.
+					</p>
+				</section>
+
+				<section class="pane-left__bottom">
+					<p>
+						This website was lovingly hand-coded with pure <a href="https://html.energy/" target="_blank">HTML energy</a>.
+					</p>
+					<p>Last updated: 2026 June 13 <a href="https://github.com/naobot/naomi-personal" target="_blank">[source]</a></p>
+				</section>
+			</div>
+
+			<div class="pane pane-middle pane-middle--grow pane--togglable" data-panetype="middle" id="bio">
+				<h2>naomi cui</h2>
+
 				<div>
-					I am interested in randomness, play, light, and sound.
+					<ul>
+						<li>1992 : b. Toronto</li>
+						<li>2010 - 2015 : Computer Science & Linguistics, University of Toronto</li>
+						<li>2017 - 2018 : Kyoto Institute of Culture & Language</li>
+						<li>2024 : move to Tokyo</li>
+					</ul>
 				</div>
-			</section>
-
-			<section class="pane-left__bottom">
-				<div>
-					This website was lovingly hand-coded with pure <a href="https://html.energy/" target="_blank">HTML energy</a>.
-				</div>
-				<div>Last updated: 2026 June 13 <a href="https://github.com/naobot/naomi-personal" target="_blank">[source]</a></div>
-			</section>
-		</div>
-
-		<div class="pane-middle" id="code">
-			<div>
-				<ul>
-					<li>tools</li>
-					<li>doodles</li>
-					<li>collabs</li>
-				</ul>
 			</div>
-		</div>
 
-		<div class="pane-middle--grow" id="language">
-			<div>
-				I am a native speaker of <strong>English</strong>, heritage speaker of <strong>Mandarin Chinese</strong>, and currently live and work in <strong>Japanese</strong>. I also speak conversational <strong>French</strong> and have dabbled in <strong>Korean</strong>.
+			<div class="pane pane-middle pane--togglable" data-panetype="middle" id="code">
+				<p>
+					<ul>
+						<li>
+							<button class="text" data-view="tools">
+								tools
+							</button>
+						</li>
+						<li>
+							<button class="text" data-view="doodles">
+								doodles
+							</button>
+						</li>
+						<li>
+							<button class="text" data-view="collabs">
+								collabs
+							</button>
+						</li>
+					</ul>
+				</p>
 			</div>
-			<div>
-				I used to be a <strong>professional translator</strong> of <strong>Japanese to English</strong> and occasionally <strong>Chinese to English</strong>.
+
+			<div class="pane pane-middle pane-middle--grow pane--togglable" data-panetype="middle" id="language">
+				<p>
+					I am a native speaker of <strong>English</strong>, heritage speaker of <strong>Mandarin Chinese</strong>, and currently live and work in <strong>Japanese</strong>. I also speak conversational <strong>French</strong> and have dabbled in <strong>Korean</strong>.
+				</p>
+				<p>
+					I used to be a <strong>professional translator</strong> of <strong>Japanese to English</strong> and occasionally <strong>Chinese to English</strong>.
+				</p>
+				<p>
+					In 2019, I wrote and co-created an <a href="https://chickensoupcomic.com/" target="_blank" class="link-external">interactive bilingual children's comic</a>.
+				</p>
 			</div>
-			<div>
-				In 2019, I wrote and co-created an <a href="https://chickensoupcomic.com/" target="_blank" class="link-external">interactive bilingual children's comic</a>.
+
+			<div class="pane pane-right pane--togglable" data-panetype="right" id="tools">
+				Tools
 			</div>
 		</div>
 	</body>
 </html>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLElement>('button[data-view]');
+  const allPanes = document.querySelectorAll<HTMLElement>('.pane--togglable');
+
+  allPanes.forEach(pane => pane.style.display = 'none');
+
+	buttons.forEach(button => {
+	  button.addEventListener('click', () => {
+	    const target = button.dataset.view;
+	    if (!target) return;
+
+	    const targetPane = document.getElementById(target);
+	    if (!targetPane) return;
+
+	    const panetype = targetPane.dataset.panetype;
+	    const isVisible = targetPane.style.display !== 'none';
+
+	    // If middle pane, also hide all right panes
+	    if (panetype === 'middle') {
+	    	const rightPanes = document.querySelectorAll<HTMLElement>('.pane-right');
+	    	rightPanes.forEach(pane => pane.style.display = 'none');
+	    }
+
+	    // Hide all togglable panes of the same type
+	    document.querySelectorAll<HTMLElement>(`.pane--togglable[data-panetype="${panetype}"]`)
+	      .forEach(pane => pane.style.display = 'none');
+
+	    if (!isVisible) targetPane.style.display = '';
+	  });
+	});
+</script>
