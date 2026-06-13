@@ -15,6 +15,31 @@ a:hover, button.text:hover {
 
 ul {
   padding-left: 16px;
+
+  &.unstyled {
+    list-style-type: none;
+
+    li {
+      &::marker {
+        content: "";
+      }
+    }
+  }
+}
+
+.timeline {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  margin: 8px 0;
+
+  &__row {
+    display: contents;
+  }
+}
+
+li::marker {
+  content: "✶ ";
 }
 
 p:first-child {
@@ -43,10 +68,24 @@ button {
   }
 }
 
+.hover-image-target {
+  display: none;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 400px;
+
+  img {
+    width: 100%;
+  }
+}
+
 .pane {
   transition: all 500ms ease-in-out;
   max-width: 800px;
-  padding: 8px;
+  padding: 8px 12px;
 
   &--togglable {
     display: none;
@@ -70,6 +109,10 @@ button {
     h1 {
       margin: 0;
     }
+  }
+
+  &__bottom {
+    font-size: 0.7rem;
   }
 
   &__main {

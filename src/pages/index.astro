@@ -15,6 +15,9 @@ import '../styles/daylight.scss'
 
 	<body class="day-1">
 		<div id="cursor"></div>
+		<div id="hover-image-self" class="hover-image-target">
+			<img src="/self.jpg">
+		</div>
 
 		<div id="root">
 			<div class="pane pane-left">
@@ -27,7 +30,7 @@ import '../styles/daylight.scss'
 
 				<section class="pane-left__main">
 					<p>
-						I am a human being based in Tokyo who <button class="text" data-view="code">codes</button>, <button class="text" data-view="language">translates</button>, and dabbles in various things.
+						I am a <span class="hover-image" data-image="self">human being</span> based in Tokyo who <button class="text" data-view="code">codes</button>, <button class="text" data-view="language">translates</button>, and dabbles in various things.
 					</p>
 					<p>
 						I am interested in randomness, play, places, light, and sound.
@@ -45,13 +48,24 @@ import '../styles/daylight.scss'
 			<div class="pane pane-middle pane-middle--grow pane--togglable" data-panetype="middle" id="bio">
 				<h2>naomi cui</h2>
 
-				<div>
-					<ul>
-						<li>1992 : b. Toronto</li>
-						<li>2010 - 2015 : Computer Science & Linguistics, University of Toronto</li>
-						<li>2017 - 2018 : Kyoto Institute of Culture & Language</li>
-						<li>2024 : move to Tokyo</li>
-					</ul>
+				<div class="timeline">
+					<div class="timeline__row">
+						<div>1992</div>
+						<div>born in Toronto</div>
+					</div>
+					<div class="timeline__row">
+						<div>2010-2015</div>
+						<div>Computer Science & Linguistics, University of Toronto</div>
+					</div>
+					<div class="timeline__row">
+						<div>2017-2018</div>
+						<div>Kyoto Institute of Culture & Language
+						</div>
+					</div>
+					<div class="timeline__row">
+						<div>2024</div>
+						<div>moved to Tokyo</div>
+					</div>
 				</div>
 			</div>
 
@@ -93,18 +107,20 @@ import '../styles/daylight.scss'
 
 			<div class="pane pane-right pane--togglable" data-panetype="right" id="tools">
 				<p>
-					Here are some somewhat useful things I have created.
+					Here are some somewhat useful things I have created. I will add descriptions soon. For now you can just click through and look.
 				</p>
 				<p>
 					<ul>
 						<li>
-							Tomodex
+							<a href="https://tomodex-phi.vercel.app/" target="_blank">
+								Tomodex
+							</a>
 						</li>
 						<li>
-							Kaki CMS
+							<a href="https://kaki-cms.vercel.app/" target="_blank">Kaki CMS</a>
 						</li>
 						<li>
-							moneylogs
+							<a href="https://moneylogs-89ebf.web.app/" target="_blank">moneylogs</a>
 						</li>
 					</ul>
 				</p>
@@ -117,7 +133,7 @@ import '../styles/daylight.scss'
 				<p>
 					<ul>
 						<li>
-							modal experiment 1
+							modal experiment 1 <em>(sharing soon)</em>
 						</li>
 					</ul>
 				</p>
@@ -130,10 +146,10 @@ import '../styles/daylight.scss'
 				<p>
 					<ul>
 						<li>
-							Virtual Bathroom
+							<a href="https://amylam.me/projects/make-believe-bathroom.htm" target="_blank">Make-Believe Bathroom</a>
 						</li>
 						<li>
-							Amy Gottung
+							<a href="https://www.amygottung.com/" target="_blank">Amy Gottung</a>
 						</li>
 					</ul>
 				</p>
@@ -178,10 +194,34 @@ import '../styles/daylight.scss'
 <script>
 	/* cursor */
 	const cursor = document.getElementById('cursor');
+	let activeHoverImage: HTMLElement | null = null;
 
 	document.addEventListener('mousemove', (e) => {
-		if (!cursor) return
+	  if (!cursor) return;
 	  cursor.style.translate = `${e.clientX - 16}px ${e.clientY - 16}px`;
+
+	  if (activeHoverImage) {
+	    activeHoverImage.style.left = `${e.clientX}px`;
+	    activeHoverImage.style.top = `${e.clientY}px`;
+	  }
+	});
+
+	document.querySelectorAll<HTMLElement>('.hover-image').forEach(span => {
+	  span.addEventListener('mouseenter', () => {
+	    const imageId = span.dataset.image;
+	    if (!imageId) return;
+	    const imageEl = document.getElementById(`hover-image-${imageId}`);
+	    if (!imageEl) return;
+	    activeHoverImage = imageEl;
+	    imageEl.style.display = 'block';
+	  });
+
+	  span.addEventListener('mouseleave', () => {
+	    if (activeHoverImage) {
+	      activeHoverImage.style.display = 'none';
+	      activeHoverImage = null;
+	    }
+	  });
 	});
 
 	/* daylight setter */

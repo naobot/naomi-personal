@@ -18,6 +18,14 @@ $cursor-color: #0049ff;
   background: $bg;
   color: $fg;
 
+  .hover-image {
+    text-decoration: underline dotted;
+  }
+
+  .hover-image-target img {
+    border: 1px solid $fg;
+  }
+
   a:link, a:hover, a:visited, a:active, button.text {
     color: $fg;
   }
@@ -32,6 +40,10 @@ $cursor-color: #0049ff;
 
   #cursor {
     --cursor-color: #{$cc};
+  }
+
+  ::selection {
+    background-color: #{$cc};
   }
 }
 
