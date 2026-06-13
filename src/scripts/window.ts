@@ -7,6 +7,7 @@ document.querySelectorAll<HTMLElement>('[data-window]').forEach(win => {
   let offsetY = 0;
 
   handle?.addEventListener('mousedown', (e) => {
+    if (window.innerWidth <= 768) return;
     isDragging = true;
     offsetX = e.clientX - win.getBoundingClientRect().left;
     offsetY = e.clientY - win.getBoundingClientRect().top;

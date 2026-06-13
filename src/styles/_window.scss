@@ -12,6 +12,13 @@
   background: var(--color-bg);
   border: 1px solid var(--color-fg);
 
+  @media (max-width: 768px) {
+    width: calc(100vw - 32px);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
   &__titlebar {
     display: flex;
     align-items: center;

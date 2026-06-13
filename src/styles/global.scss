@@ -3,14 +3,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Libertinus+Mono&family=Zen+Kaku+Gothic+New&display=swap');
 
 *, *:hover { cursor: none; }
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 
 body {
-  box-sizing: border-box;
   margin: 0;
   font-family: "Libertinus Mono", monospace;
 
   &.no-transition {
     transition: none;
+  }
+}
+
+#root {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
   }
 }
 
@@ -60,12 +74,6 @@ p:last-child {
   margin-bottom: 0;
 }
 
-#root {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-}
-
 button {
   &.text {
     background: none;
@@ -99,6 +107,14 @@ button {
 
   &--togglable {
     display: none;
+
+    &.is-visible {
+      display: block;
+
+      @media (max-width: 768px) {
+        width: 100%;
+      }
+    }
   }
 }
 
@@ -106,6 +122,12 @@ button {
   display: flex;
   flex-direction: column;
   max-width: 320px;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 100%;
+  }
 
   &__header {
     display: flex;
@@ -155,11 +177,21 @@ button {
 
 .pane-middle, .pane-right {
   padding: 16px;
+
+  @media (max-width: 768px) {
+    border-left: none !important;
+    border-top: 1px solid currentColor;
+  }
 }
 
 .pane-middle {
   min-width: 320px;
   flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 100%;
+  }
 
   h2 {
     margin: 0;
@@ -172,4 +204,8 @@ button {
 
 .pane-right {
   flex-grow: 1;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 }

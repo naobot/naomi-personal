@@ -63,12 +63,8 @@ const { title = 'nnao.world' } = Astro.props;
     </div>
 
     <script>
-      console.log('pane toggling');
-
       const buttons = document.querySelectorAll<HTMLElement>('button[data-view]');
       const allPanes = document.querySelectorAll<HTMLElement>('.pane--togglable');
-
-      allPanes.forEach(pane => pane.style.display = 'none');
 
       buttons.forEach(button => {
         button.addEventListener('click', () => {
@@ -78,12 +74,13 @@ const { title = 'nnao.world' } = Astro.props;
           const targetPane = document.getElementById(target);
           if (!targetPane) return;
 
-          const isVisible = targetPane.style.display !== 'none';
+          const panetype = targetPane.dataset.panetype;
+          const isVisible = targetPane.classList.contains('is-visible');
 
-          document.querySelectorAll<HTMLElement>('.pane--togglable')
-            .forEach(pane => pane.style.display = 'none');
+          document.querySelectorAll<HTMLElement>(`.pane--togglable[data-panetype="${panetype}"]`)
+            .forEach(pane => pane.classList.remove('is-visible'));
 
-          if (!isVisible) targetPane.style.display = 'block';
+          if (!isVisible) targetPane.classList.add('is-visible');
         });
       });
     </script>
