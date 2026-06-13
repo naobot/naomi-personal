@@ -229,8 +229,8 @@ import '../styles/daylight.scss'
 
 	setInterval(() => {
 		const now = new Date();
-		// const currentHour = now.getHours();
-		const currentHour = now.getMinutes() % 24;
+		const currentHour = now.getHours();
+		// const currentHour = now.getMinutes() % 24;
 
 		if (bodyElement?.className && bodyElement.className !== `day-${currentHour}`) {
 			bodyElement.className = `day-${currentHour}`;
