@@ -47,6 +47,7 @@ $cursor-color: #0049ff;
 
   ::selection {
     background-color: #{$cc};
+    color: #{$bg};
   }
 
   .window {
