@@ -24,7 +24,7 @@ const { title = 'nnao.world' } = Astro.props;
 
     <div id="cursor"></div>
     <div id="hover-image-self" class="hover-image-target">
-      <img src="/self.jpg">
+      <img src="/self.webp">
     </div>
 
     <div id="root">
@@ -55,7 +55,7 @@ const { title = 'nnao.world' } = Astro.props;
           <p>
             This website was lovingly hand-coded with pure <a href="https://html.energy/" target="_blank">HTML energy</a>.
           </p>
-          <p>Last updated: 2026 June 13 <a href="https://github.com/naobot/naomi-personal" target="_blank">[source]</a></p>
+          <p>Last updated: 2026 June 26 <a href="https://github.com/naobot/naomi-personal" target="_blank">[source]</a></p>
         </Fragment>
       </PaneLeft>
 
@@ -64,7 +64,6 @@ const { title = 'nnao.world' } = Astro.props;
 
     <script>
       const buttons = document.querySelectorAll<HTMLElement>('button[data-view]');
-      const allPanes = document.querySelectorAll<HTMLElement>('.pane--togglable');
 
       buttons.forEach(button => {
         button.addEventListener('click', () => {
@@ -90,7 +89,7 @@ const { title = 'nnao.world' } = Astro.props;
 
       function setDayClass() {
         const currentHour = new Date().getHours();
-        if (bodyElement?.className !== `day-${currentHour}`) {
+        if (bodyElement && bodyElement?.className !== `day-${currentHour}`) {
           bodyElement.className = `day-${currentHour}`;
         }
       }
