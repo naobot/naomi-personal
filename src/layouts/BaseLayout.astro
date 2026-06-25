@@ -111,6 +111,7 @@ const { title = 'nnao.world' } = Astro.props;
         }
       });
 
+      /* hover image */
       document.querySelectorAll<HTMLElement>('.hover-image').forEach(span => {
         span.addEventListener('mouseenter', () => {
           const imageId = span.dataset.image;
