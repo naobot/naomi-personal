@@ -1,0 +1,1 @@
+import{S as e,T as t,t as n,u as r}from"./esm.B91obCNB.js";var i=new e().toDestination(),a=new r((e,t)=>{i.triggerAttackRelease(t,`8n`,e)},[`C4`,`E4`,`G4`,`B4`],`4n`),o=document.querySelector(`#toggle`),s=!1;o?.addEventListener(`click`,async()=>{await t(),s?(n.stop(),a.stop(),o.textContent=`play`):(a.start(0),n.start(),o.textContent=`stop`),s=!s});
