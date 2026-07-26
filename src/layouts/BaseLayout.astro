@@ -17,6 +17,17 @@ const { title = 'nnao.world' } = Astro.props;
     <title>{title}</title>
   </head>
 
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KVKR21H59D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-KVKR21H59D');
+  </script>
+
+
   <body class="no-transition">
     <script is:inline>
       document.body.classList.add(`day-${new Date().getHours()}`);
