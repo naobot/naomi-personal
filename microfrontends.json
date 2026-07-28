@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/microfrontends.json",
+  "applications": {
+    "naomi-personal": {
+      "development": {
+        "fallback": "nnao.world"
+      }
+    },
+    "tone-experiments": {
+      "routing": [
+        {
+          "paths": "/tone"
+        }
+      ]
+    }
+  }
+}
