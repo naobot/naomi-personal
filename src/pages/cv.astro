@@ -1,0 +1,439 @@
+---
+const projects = [
+  {
+    name: 'Tomodex',
+    url: 'https://tomodex-phi.vercel.app/',
+    repo: 'https://github.com/naobot/tomodex',
+    summary: {
+      en: 'A private rolodex and scrapbook for keeping track of friends — mailing addresses, birthdays, notes, and custom fields. Next.js 16 (App Router), React 19, TypeScript, Tailwind, Prisma, Postgres on Supabase, NextAuth with Google OAuth.',
+      ja: '友人の住所・誕生日・メモなどを記録する、非公開のロロデックス兼スクラップブック。Next.js 16（App Router）、React 19、TypeScript、Tailwind、Prisma、Supabase 上の PostgreSQL、NextAuth（Google OAuth）。',
+    },
+  },
+  {
+    name: 'Kaki CMS',
+    url: 'https://kaki-cms.vercel.app/',
+    repo: 'https://github.com/naobot/kaki-cms',
+    summary: {
+      en: 'A self-hosted CMS for developers maintaining static sites on behalf of clients: one deployment edits any number of GitHub-backed repos, with saves committing straight to the repo to trigger a rebuild. Next.js, TypeScript, Tailwind, shadcn/ui, Tiptap, Supabase auth, GitHub API as the content layer.',
+      ja: 'クライアントの静的サイトを管理する開発者向けのセルフホスト型 CMS。一度デプロイすれば GitHub 上の任意の数のリポジトリを編集でき、保存するとリポジトリへ直接コミットされて再ビルドが走る。Next.js、TypeScript、Tailwind、shadcn/ui、Tiptap、Supabase 認証、コンテンツ層に GitHub API。',
+    },
+  },
+  {
+    name: 'moneylogs',
+    url: 'https://moneylogs-89ebf.web.app/',
+    repo: 'https://github.com/naobot/moneylogs',
+    summary: {
+      en: 'A private microblogging app for sharing day-to-day spending with a closed group of friends, in the spirit of Money Diaries. React and Vite+, TypeScript, Sass, Firebase and Firestore, Sentry.',
+      ja: '日々の支出を親しい友人グループだけで共有する、Money Diaries 的な非公開マイクロブログ。React と Vite+、TypeScript、Sass、Firebase／Firestore、Sentry。',
+    },
+  },
+  {
+    name: 'OK Computer',
+    summary: {
+      en: 'A local-only browser desktop shell — window manager, command palette, and small apps for journalling, lists, day logging, and browsing a code folder with AI-generated project summaries. React, Zustand, Vite+, a Hono API with filesystem and git access, SQLite, and the Anthropic SDK.',
+      ja: 'ローカル環境専用の、ブラウザで動くデスクトップシェル。ウィンドウマネージャとコマンドパレットに加え、日記・リスト・一日の記録、AI が生成した要約付きのコードフォルダ閲覧といった小さなアプリを備える。React、Zustand、Vite+、ファイルシステムと git にアクセスする Hono API、SQLite、Anthropic SDK。',
+    },
+  },
+  {
+    name: 'Make-Believe Bathroom',
+    url: 'https://amylam.me/projects/make-believe-bathroom.htm',
+    repo: 'https://github.com/naobot/virtual-bathroom',
+    summary: {
+      en: 'A collaborative online artwork built with artist Amy Lam — a shared virtual bathroom visitors inhabit together in real time. React front end with parallax scenes, an Express server, Pusher for realtime presence, Supabase for storage.',
+      ja: 'アーティストの Amy Lam と共同制作したオンライン作品。来訪者どうしがリアルタイムで居合わせる、共有の仮想バスルーム。パララックス演出の React フロントエンド、Express サーバー、リアルタイム通信に Pusher、ストレージに Supabase。',
+    },
+  },
+  {
+    name: 'Tone.js Experiments',
+    url: 'https://nnao.world/tone',
+    repo: 'https://github.com/naobot/tone-experiments',
+    summary: {
+      en: 'An ongoing series of browser-based sound sketches, some driven by real-world data such as sky position and daylight. Astro with Vue islands, Tone.js, Three.js, astronomy-engine, Upstash Redis, deployed on Vercel as a microfrontend.',
+      ja: 'ブラウザ上で動く音のスケッチを継続的に制作しているシリーズ。天体の位置や日照など、実世界のデータを用いるものもある。Astro と Vue アイランド、Tone.js、Three.js、astronomy-engine、Upstash Redis、Vercel のマイクロフロントエンドとして公開。',
+    },
+  },
+  {
+    name: 'ウェブ写経 — web shakyō',
+    url: 'https://html-nao.neocities.org/',
+    summary: {
+      en: 'A meditation on copying by hand, made for HTML Day Tokyo 2026 and published on Neocities. Hand-written HTML and CSS, no build step.',
+      ja: '手で書き写すという行為についての作品。HTML Day Tokyo 2026 のために制作し、Neocities で公開。ビルド工程を持たない、手書きの HTML と CSS。',
+    },
+  },
+  {
+    name: 'Client Homepages',
+    url: 'https://www.amygottung.com/',
+    repo: 'https://github.com/naobot/amy-gottung',
+    summary: {
+      en: 'Design and development of portfolio and repertory-cinema sites for clients, each wired to Kaki CMS so the owners can edit their own content. Astro and Jekyll, deployed on Vercel.',
+      ja: 'クライアントのポートフォリオサイトや名画座サイトの設計・制作。いずれも Kaki CMS と連携し、サイトの運営者自身が内容を更新できる。Astro と Jekyll、Vercel でホスティング。',
+    },
+  },
+];
+
+const education = [
+  {
+    name: { en: 'University of Toronto', ja: 'トロント大学' },
+    detail: {
+      en: 'HBSc, Computer Science & Linguistics',
+      ja: '理学士（コンピュータサイエンス・言語学）',
+    },
+    years: '2010–2015',
+  },
+  {
+    name: {
+      en: 'Kyoto Institute of Culture & Language',
+      ja: '京都文化日本語学校',
+    },
+    detail: { en: 'Japanese language', ja: '日本語' },
+    years: '2017–2018',
+  },
+];
+
+const qualifications = [
+  {
+    name: {
+      en: 'Japanese Language Proficiency Test (JLPT), N1',
+      ja: '日本語能力試験（JLPT）N1',
+    },
+    years: '2023',
+  },
+];
+
+const headings = {
+  projects: { en: 'Selected Projects', ja: '主なプロジェクト' },
+  education: { en: 'Education', ja: '学歴' },
+  qualifications: { en: 'Qualifications', ja: '資格' },
+};
+
+const contact = {
+  en: 'naomi@nowme.ca · Tokyo, Japan',
+  ja: 'naomi@nowme.ca · 東京',
+};
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Naomi Cui — CV</title>
+    <script is:inline>
+      /* Apply the stored language before paint so there is no flash of English. */
+      try {
+        const stored = localStorage.getItem('cv-lang');
+        if (stored === 'ja' || stored === 'en') {
+          document.documentElement.lang = stored;
+        }
+      } catch (e) {}
+    </script>
+  </head>
+
+  <body>
+    <main>
+      <header>
+        <div class="identity">
+          <h1>Naomi Cui</h1>
+          <p class="contact">
+            <span class="en">{contact.en}</span><span class="ja">{contact.ja}</span>
+          </p>
+        </div>
+
+        <button id="lang-toggle" type="button">
+          <span class="en">日本語</span><span class="ja">English</span>
+        </button>
+      </header>
+
+      <div class="columns">
+        <section>
+          <h2>
+            <span class="en">{headings.projects.en}</span><span class="ja">{headings.projects.ja}</span>
+          </h2>
+          <ul>
+            {projects.map(project => (
+              <li>
+                <div class="entry">
+                  <h3>
+                    {project.url
+                      ? <a href={project.url} target="_blank" rel="noopener">
+                          {project.name}<span class="arrow" aria-hidden="true">↗</span>
+                        </a>
+                      : project.name}
+                  </h3>
+                  {project.repo && (
+                    <a class="repo" href={project.repo} target="_blank" rel="noopener">GitHub</a>
+                  )}
+                </div>
+                <p>
+                  <span class="en">{project.summary.en}</span><span class="ja">{project.summary.ja}</span>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section>
+          <h2>
+            <span class="en">{headings.education.en}</span><span class="ja">{headings.education.ja}</span>
+          </h2>
+          <ul>
+            {education.map(entry => (
+              <li>
+                <div class="entry">
+                  <h3>
+                    <span class="en">{entry.name.en}</span><span class="ja">{entry.name.ja}</span>
+                  </h3>
+                  <span class="years">{entry.years}</span>
+                </div>
+                <p>
+                  <span class="en">{entry.detail.en}</span><span class="ja">{entry.detail.ja}</span>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section>
+          <h2>
+            <span class="en">{headings.qualifications.en}</span><span class="ja">{headings.qualifications.ja}</span>
+          </h2>
+          <ul>
+            {qualifications.map(entry => (
+              <li>
+                <div class="entry">
+                  <h3>
+                    <span class="en">{entry.name.en}</span><span class="ja">{entry.name.ja}</span>
+                  </h3>
+                  <span class="years">{entry.years}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const toggle = document.getElementById('lang-toggle');
+
+      toggle?.addEventListener('click', () => {
+        const next = document.documentElement.lang === 'ja' ? 'en' : 'ja';
+        document.documentElement.lang = next;
+        try {
+          localStorage.setItem('cv-lang', next);
+        } catch (e) {}
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  :global(html) {
+    background: #fff;
+  }
+
+  :global(body) {
+    margin: 0;
+    background: #fff;
+    color: #000;
+    font-family:
+      'Helvetica Neue', Helvetica, 'Inter', Arial, 'Hiragino Kaku Gothic ProN',
+      'Noto Sans JP', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Language switching: both languages ship in the markup, the html[lang] picks one. */
+  :global(html[lang='en']) .ja,
+  :global(html[lang='ja']) .en {
+    display: none;
+  }
+
+  /* monospace marks the machine-generated layer: section rules, years, repo links */
+  :global(body) {
+    --meta-font: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas,
+      monospace;
+  }
+
+  main {
+    padding: 1.75rem 1.25rem 4rem;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2.25rem;
+  }
+
+  .identity {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.9rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .contact {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #555;
+  }
+
+  #lang-toggle {
+    flex: none;
+    margin-left: auto;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    background: none;
+    color: #555;
+    font: inherit;
+    font-size: 0.75rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  #lang-toggle:hover {
+    border-color: #000;
+    color: #000;
+  }
+
+  .columns {
+    columns: 2;
+    column-gap: 2.5rem;
+  }
+
+  section {
+    margin-bottom: 2.25rem;
+  }
+
+  section:last-child {
+    margin-bottom: 0;
+  }
+
+  h2 {
+    margin: 0 0 0.9rem;
+    font-family: var(--meta-font);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    break-after: avoid-column;
+    break-inside: avoid-column;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    margin-bottom: 1.15rem;
+    break-inside: avoid-column;
+  }
+
+  li:last-child {
+    margin-bottom: 0;
+  }
+
+  .entry {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  h3 a {
+    color: inherit;
+    text-decoration-color: #bbb;
+    text-underline-offset: 0.15em;
+  }
+
+  h3 a:hover {
+    text-decoration-color: #000;
+  }
+
+  /* inline-block keeps the parent link's underline off the arrow */
+  .arrow {
+    display: inline-block;
+    margin-left: 0.25em;
+    font-size: 0.75em;
+    line-height: 1;
+    color: #999;
+    vertical-align: 0.1em;
+  }
+
+  h3 a:hover .arrow {
+    color: #000;
+  }
+
+  .repo,
+  .years {
+    flex: none;
+    font-family: var(--meta-font);
+    font-size: 0.72rem;
+    color: #777;
+    text-decoration: none;
+  }
+
+  .years {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .repo:hover {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  li p {
+    margin: 0.15rem 0 0;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: #444;
+  }
+
+  @media (max-width: 46rem) {
+    main {
+      padding: 1.25rem 1rem 3rem;
+    }
+
+    .columns {
+      columns: 1;
+    }
+  }
+
+  @media print {
+    main {
+      padding: 0;
+    }
+
+    #lang-toggle {
+      display: none;
+    }
+
+    li p {
+      color: #000;
+    }
+
+    .repo,
+    .years {
+      color: #000;
+    }
+  }
+</style>
