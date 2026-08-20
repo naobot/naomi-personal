@@ -1,0 +1,61 @@
+---
+const schedules = [{ href: '/schedule/toronto-2026', label: 'Toronto 2026' }];
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Schedules</title>
+  </head>
+  <body>
+    <main>
+      <h1>Schedules</h1>
+      <ul>
+        {schedules.map((s) => (
+          <li><a href={s.href}>{s.label}</a></li>
+        ))}
+      </ul>
+    </main>
+  </body>
+</html>
+
+<style>
+  :global(html) {
+    background: #fff;
+  }
+
+  :global(body) {
+    margin: 0;
+    background: #fff;
+    color: #000;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  h1 {
+    margin: 0 0 1.5rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  a {
+    color: #000;
+  }
+</style>

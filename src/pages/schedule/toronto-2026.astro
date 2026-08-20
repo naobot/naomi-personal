@@ -1,0 +1,135 @@
+---
+import ScheduleLayout from '../../layouts/ScheduleLayout.astro';
+
+/*
+  Hardcoded event data for this trip.
+
+  `devOnly` events always render as a block — in both the collapsed
+  day-summary chip and the expanded week-grid — so the calendar's shape
+  doesn't leak whether something private is scheduled. Their title/time text
+  is only rendered on the dev server; on a production build
+  (import.meta.env.DEV is false for `astro build`) the text is redacted to
+  the generic label "private" in both places.
+
+  `tentative` events are ideas, not commitments: they never get a time slot
+  in the expanded week grid, only a chip in the collapsed day summary — but
+  that chip shows the real title, just styled distinctly (`chip-tentative`).
+*/
+
+interface ScheduleEvent {
+  date: string; // YYYY-MM-DD
+  time: string | null; // "HH:MM", or null for an all-day/tentative item
+  duration: number; // minutes, ignored for all-day/tentative items
+  title: string;
+  devOnly: boolean;
+  tentative: boolean;
+}
+
+const events: ScheduleEvent[] = [
+  { date: '2026-09-13', time: '17:00', duration: 60, title: 'YYZ arrival', devOnly: false, tentative: false },
+  { date: '2026-09-14', time: null, duration: 0, title: 'Brenden free', devOnly: false, tentative: true },
+  { date: '2026-09-15', time: null, duration: 0, title: 'Brenden free', devOnly: false, tentative: true },
+  { date: '2026-09-16', time: null, duration: 0, title: 'Brenden free', devOnly: false, tentative: true },
+  { date: '2026-09-17', time: null, duration: 0, title: 'Brenden free', devOnly: false, tentative: true },
+  { date: '2026-09-18', time: '20:00', duration: 60, title: 'Private test event', devOnly: true, tentative: false },
+  { date: '2026-09-19', time: null, duration: 0, title: 'Go place', devOnly: false, tentative: true },
+  { date: '2026-09-20', time: null, duration: 0, title: 'Go place', devOnly: false, tentative: true },
+  { date: '2026-09-25', time: '13:05', duration: 60, title: 'YYZ departure', devOnly: false, tentative: false },
+];
+
+const DEV = import.meta.env.DEV;
+
+// devOnly events show their real title/time on the dev server, and are
+// redacted on a production build. Used for the expanded week-grid block,
+// where the redacted title becomes the literal word "private" (there's no
+// dashed-label styling there — it's the only text shown).
+function displayOf(e: ScheduleEvent) {
+  const redacted = e.devOnly && !DEV;
+  return {
+    title: redacted ? 'private' : e.title,
+    time: redacted ? null : e.time,
+  };
+}
+
+// Day-summary chip: devOnly items always carry the `chip-dev` style, whose
+// "private · " label comes from CSS. On the dev server the chip also shows
+// the real title/time next to that label; on production the title/time are
+// blanked out, leaving only the CSS label visible.
+function chipDisplayOf(e: ScheduleEvent) {
+  if (!e.devOnly) return { title: e.title, time: e.time };
+  const redacted = !DEV;
+  return {
+    title: redacted ? '' : e.title,
+    time: redacted ? null : e.time,
+  };
+}
+
+const WEEKDAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+function makeDay(day: number, weekdayIndex: number) {
+  return { date: `2026-09-${String(day).padStart(2, '0')}`, dayNum: day, weekday: WEEKDAY_NAMES[weekdayIndex] };
+}
+
+const weekDefs = [
+  { label: '13 – 19 September', days: [13, 14, 15, 16, 17, 18, 19].map((d, i) => makeDay(d, i)) },
+  { label: '20 – 25 September', days: [20, 21, 22, 23, 24, 25].map((d, i) => makeDay(d, i)) },
+];
+
+const DAY_START_MIN = 6 * 60; // 06:00
+const DAY_END_MIN = 22 * 60; // 22:00
+const TOTAL_MIN = DAY_END_MIN - DAY_START_MIN;
+const HOUR_HEIGHT_REM = 3;
+const GRID_HEIGHT_REM = (TOTAL_MIN / 60) * HOUR_HEIGHT_REM;
+const HOURS = Array.from({ length: TOTAL_MIN / 60 }, (_, i) => DAY_START_MIN / 60 + i);
+
+function minutesOf(time: string) {
+  const [h, m] = time.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function eventsFor(date: string) {
+  return events
+    .filter((e) => e.date === date)
+    .sort((a, b) => (a.time ?? '').localeCompare(b.time ?? ''));
+}
+
+const weeks = weekDefs.map((week) => ({
+  label: week.label,
+  days: week.days.map((day) => {
+    const dayEvents = eventsFor(day.date);
+    const gridEvents = dayEvents.filter((e) => !e.tentative);
+    const allDay = gridEvents.filter((e) => !e.time);
+    const timed = gridEvents.filter((e) => e.time);
+
+    return {
+      ...day,
+      chips: dayEvents.map((e) => {
+        const disp = chipDisplayOf(e);
+        return { time: disp.time, title: disp.title, devOnly: e.devOnly, tentative: e.tentative };
+      }),
+      allDay: allDay.map((e) => {
+        const disp = displayOf(e);
+        return { title: disp.title, devOnly: e.devOnly };
+      }),
+      timed: timed.map((e) => {
+        // position is always derived from the real time, even when the
+        // displayed text is redacted, so the block still lands in its
+        // correct slot
+        const startMin = minutesOf(e.time!);
+        const top = ((startMin - DAY_START_MIN) / 60) * HOUR_HEIGHT_REM;
+        const height = Math.max((e.duration / 60) * HOUR_HEIGHT_REM, 1.1);
+        const disp = displayOf(e);
+        return { time: disp.time, title: disp.title, devOnly: e.devOnly, top, height };
+      }),
+    };
+  }),
+}));
+---
+<ScheduleLayout
+  title="Toronto 2026"
+  rangeLabel="13 – 25 September 2026"
+  hours={HOURS}
+  hourHeightRem={HOUR_HEIGHT_REM}
+  gridHeightRem={GRID_HEIGHT_REM}
+  weeks={weeks}
+/>

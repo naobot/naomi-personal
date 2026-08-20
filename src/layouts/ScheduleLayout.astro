@@ -1,0 +1,559 @@
+---
+/*
+  Generic standalone schedule shell — own <html>, no BaseLayout, scoped CSS.
+  Carries no dates or events itself; instance pages (e.g. src/pages/schedule/
+  toronto-2026.astro) compute the data and pass it in as props.
+*/
+
+interface Chip {
+  time: string | null;
+  title: string;
+  devOnly: boolean;
+  tentative: boolean;
+}
+
+interface TimedEvent {
+  time: string | null; // null when redacted (devOnly, non-dev build) — block still keeps its slot
+  title: string;
+  devOnly: boolean;
+  top: number; // rem, relative to the day column's hour grid
+  height: number; // rem
+}
+
+interface DayView {
+  date: string;
+  dayNum: number;
+  weekday: string;
+  chips: Chip[]; // for the collapsed month view, all-day + timed combined, sorted
+  allDay: { title: string; devOnly: boolean }[];
+  timed: TimedEvent[];
+}
+
+interface WeekView {
+  label: string;
+  days: DayView[];
+}
+
+interface Props {
+  title: string;
+  rangeLabel: string;
+  hours: number[]; // hour-of-day labels for the expanded view, e.g. [6, 7, ..., 21]
+  hourHeightRem: number;
+  gridHeightRem: number; // total height of the expanded hour grid
+  weeks: WeekView[];
+}
+
+const { title, rangeLabel, hours, hourHeightRem, gridHeightRem, weeks } = Astro.props;
+
+/*
+  Per-week sizing for the expanded time-chart viewport: how tall it opens by
+  default, and where it starts scrolled to. Both are derived from that
+  week's own events, not fixed — a quiet week opens short and un-scrolled,
+  a busy one opens taller and scrolled past any dead early-morning stretch.
+*/
+const MIN_VISIBLE_REM = 18.75; // ~300px at a 16px root font size
+const BASE_VIEW_HOURS = 4; // baseline hours of context shown regardless of event count
+
+const weekMeta = weeks.map((week) => {
+  const timed = week.days.flatMap((d) => d.timed);
+  const allDay = week.days.flatMap((d) => d.allDay);
+  const eventCount = timed.length + allDay.length;
+
+  // scroll to one hour before the week's earliest timed event, so the
+  // default view skips any dead stretch before it (e.g. nothing before
+  // 7am → open scrolled to just past 7am); no timed events → stay at top
+  const earliestTop = timed.length > 0 ? Math.min(...timed.map((e) => e.top)) : 0;
+  const scrollToRem = Math.max(0, earliestTop - hourHeightRem);
+
+  const visibleHeightRem = Math.max(
+    MIN_VISIBLE_REM,
+    Math.min(gridHeightRem, (eventCount * 2 + BASE_VIEW_HOURS) * hourHeightRem),
+  );
+
+  return { scrollToRem, visibleHeightRem };
+});
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <main>
+      <h1>{title}</h1>
+      <p class="range">{rangeLabel}</p>
+
+      {weeks.map((week, i) => (
+        <details class="week">
+          <summary>
+            <span class="week-label">{week.label}</span>
+            <span class="chevron" aria-hidden="true">▸</span>
+
+            <div class="month-grid" style={`--cols: ${week.days.length}`}>
+              <div class="month-gutter" aria-hidden="true"></div>
+              {week.days.map((day) => (
+                <div class="month-cell">
+                  <div class="cell-head">
+                    <span class="cell-weekday">{day.weekday}</span>
+                    <span class="cell-num">{day.dayNum}</span>
+                  </div>
+                  <ul class="chip-list">
+                    {day.chips.map((ev) => (
+                      <li class={`chip ${ev.devOnly ? 'chip-dev' : ''} ${ev.tentative ? 'chip-tentative' : ''}`}>
+                        {(ev.devOnly || ev.tentative || ev.time) && (
+                          <span class="chip-head">
+                            {ev.time && <span class="chip-time">{ev.time}</span>}
+                          </span>
+                        )}
+                        <span class="chip-title">{ev.title}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </summary>
+
+          <div class="week-body">
+            <div
+              class="week-grid-viewport"
+              style={`height: ${weekMeta[i].visibleHeightRem}rem;`}
+              data-scroll-rem={weekMeta[i].scrollToRem}
+            >
+              <div class="week-grid" style={`--cols: ${week.days.length}`}>
+                <div class="hour-col">
+                  {hours.map((h) => (
+                    <div class="hour-label" style={`height: ${hourHeightRem}rem`}>
+                      {String(h).padStart(2, '0')}:00
+                    </div>
+                  ))}
+                </div>
+
+                {week.days.map((day) => (
+                  <div class="day-col">
+                    {day.allDay.length > 0 && (
+                      <div class="all-day-row">
+                        {day.allDay.map((ev) => (
+                          <div class={`all-day-chip ${ev.devOnly ? 'chip-dev' : ''}`}>{ev.title}</div>
+                        ))}
+                      </div>
+                    )}
+                    <div
+                      class="hour-grid"
+                      style={`height: ${gridHeightRem}rem; background-size: 100% ${hourHeightRem}rem;`}
+                    >
+                      {day.timed.map((ev) => (
+                        <div
+                          class={`event-block ${ev.devOnly ? 'chip-dev' : ''}`}
+                          style={`top: ${ev.top}rem; min-height: ${ev.height}rem; max-height: ${ev.height}rem;`}
+                        >
+                          {ev.time && <span class="event-time">{ev.time}</span>}
+                          <span class="event-title">{ev.title}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </details>
+      ))}
+    </main>
+
+    <script>
+      /*
+        Native <details> can't transition its open/close height, so this
+        intercepts the toggle and animates the <details> element's own
+        height with the Web Animations API instead (the standard technique
+        for this), keeping `details.open` in sync for accessibility.
+      */
+      document.querySelectorAll<HTMLDetailsElement>('details.week').forEach((details) => {
+        const summary = details.querySelector<HTMLElement>(':scope > summary');
+        const body = details.querySelector<HTMLElement>(':scope > .week-body');
+        if (!summary || !body) return;
+
+        let animation: Animation | null = null;
+        let isClosing = false;
+        let isExpanding = false;
+
+        summary.addEventListener('click', (e) => {
+          e.preventDefault();
+          details.style.overflow = 'hidden';
+
+          if (isClosing || !details.open) {
+            openDetails();
+          } else if (isExpanding || details.open) {
+            shrink();
+          }
+        });
+
+        function shrink() {
+          isClosing = true;
+          const startHeight = `${details.offsetHeight}px`;
+          const endHeight = `${summary!.offsetHeight}px`;
+          animation?.cancel();
+          animation = details.animate(
+            { height: [startHeight, endHeight] },
+            { duration: 250, easing: 'ease-in-out' },
+          );
+          animation.onfinish = () => onAnimationFinish(false);
+          animation.oncancel = () => (isClosing = false);
+        }
+
+        function openDetails() {
+          details.style.height = `${details.offsetHeight}px`;
+          details.open = true;
+          scrollToDefault();
+          requestAnimationFrame(expand);
+        }
+
+        function expand() {
+          isExpanding = true;
+          const startHeight = `${details.offsetHeight}px`;
+          const endHeight = `${summary!.offsetHeight + body!.offsetHeight}px`;
+          animation?.cancel();
+          animation = details.animate(
+            { height: [startHeight, endHeight] },
+            { duration: 250, easing: 'ease-in-out' },
+          );
+          animation.onfinish = () => onAnimationFinish(true);
+          animation.oncancel = () => (isExpanding = false);
+        }
+
+        function onAnimationFinish(open: boolean) {
+          details.open = open;
+          animation = null;
+          isClosing = false;
+          isExpanding = false;
+          details.style.height = details.style.overflow = '';
+        }
+
+        function scrollToDefault() {
+          const viewport = details.querySelector<HTMLElement>('.week-grid-viewport');
+          if (!viewport) return;
+          const remPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+          viewport.scrollTop = parseFloat(viewport.dataset.scrollRem || '0') * remPx;
+        }
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  :global(html) {
+    background: #fafafa;
+  }
+
+  :global(body) {
+    margin: 0;
+    background: #fafafa;
+    color: #686963;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  h1 {
+    margin: 0 0 0.25rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #4a4b46;
+  }
+
+  .range {
+    margin: 0 0 2rem;
+    font-size: 0.85rem;
+    color: #686963;
+  }
+
+  /* --- accordion shell --- */
+
+  .week {
+    margin-bottom: 1.5rem;
+  }
+
+  .week summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 0.4rem 0 0.75rem;
+  }
+
+  .week summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .week summary::marker {
+    content: '';
+  }
+
+  .week-label {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #4a4b46;
+    margin-right: 0.4rem;
+  }
+
+  .chevron {
+    display: inline-block;
+    color: #db5461;
+    transition: transform 0.15s ease;
+  }
+
+  .week[open] .chevron {
+    transform: rotate(90deg);
+  }
+
+  /* --- collapsed / month-style view --- */
+
+  .month-grid {
+    display: grid;
+    grid-template-columns: 3.5rem repeat(var(--cols), 1fr);
+    gap: 0.4rem;
+    margin-top: 0.7rem;
+  }
+
+  .month-gutter {
+    /* keeps day columns aligned with the hour-grid columns below */
+  }
+
+  .month-cell {
+    background: #fff;
+    border-radius: 0.9rem;
+    min-height: 4.5rem;
+    min-width: 0;
+    padding: 0.5rem 0.55rem;
+  }
+
+  .cell-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.4rem;
+  }
+
+  .cell-weekday {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #a3a49e;
+  }
+
+  .cell-num {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4a4b46;
+  }
+
+  .chip-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  /* two rows by default: an optional head row (label + time), then the
+     title row. An event with neither a label nor a time skips the head row
+     entirely and is just the one line. */
+  .chip {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+    font-size: 0.72rem;
+    line-height: 1.3;
+    background: #e3f2fd;
+    border-radius: 0.5rem;
+    padding: 0.2rem 0.45rem;
+    border-left: 3px solid #db5461;
+    position: relative;
+  }
+
+  .chip:hover {
+    z-index: 2;
+  }
+
+  .chip-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-size: 0.62rem;
+  }
+
+  .chip-time {
+    flex: none;
+    color: #686963;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .chip-title {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-height: 1.3em;
+    transition: max-height 0.25s ease-in-out;
+  }
+
+  /* on hover, wrap onto multiple lines instead of truncating — the chip
+     stays the same width and animates taller to fit the full text; the cap
+     is generous but the box only ever grows to the text's actual height */
+  .chip:hover .chip-title {
+    white-space: normal;
+    max-height: 10em;
+  }
+
+  .chip-dev {
+    background: transparent;
+    border: 1px dashed #cfd0c9;
+    border-left: 1px dashed #cfd0c9;
+    color: #a3a49e;
+  }
+
+  /* scoped to .chip (month view) so the expanded-view event-block, which
+     also carries chip-dev, doesn't get a duplicate label */
+  .chip-dev .chip-head::before {
+    content: 'private · ';
+    flex: none;
+    white-space: nowrap;
+    color: #a3a49e;
+  }
+
+  .chip-tentative {
+    background: rgba(219, 84, 97, 0.1);
+    border-left: 3px dashed #db5461;
+    color: #686963;
+  }
+
+  .chip-tentative .chip-head::before {
+    content: 'tentative · ';
+    flex: none;
+    white-space: nowrap;
+    color: #db5461;
+  }
+
+  /* --- expanded / week time-grid view --- */
+
+  .week-body {
+    margin-bottom: 0.5rem;
+  }
+
+  /* fixed-height, independently-scrolling window onto the full-day hour
+     grid — height and default scroll position are both computed per week
+     from that week's events (see weekMeta in the frontmatter) */
+  .week-grid-viewport {
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 0.9rem;
+  }
+
+  .week-grid {
+    display: grid;
+    grid-template-columns: 3.5rem repeat(var(--cols), 1fr);
+  }
+
+  .hour-col {
+    padding-right: 0.4rem;
+  }
+
+  .hour-label {
+    box-sizing: border-box;
+    padding-left: 0.1rem;
+    text-align: left;
+    font-size: 0.65rem;
+    color: #a3a49e;
+    transform: translateY(-0.5em);
+  }
+
+  .day-col {
+    position: relative;
+  }
+
+  .all-day-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0 0.25rem 0.4rem;
+  }
+
+  .all-day-chip {
+    font-size: 0.65rem;
+    background: #e3f2fd;
+    border-radius: 0.4rem;
+    padding: 0.15rem 0.4rem;
+  }
+
+  .hour-grid {
+    position: relative;
+    background-image: linear-gradient(to bottom, #ececec 1px, transparent 1px);
+    background-repeat: repeat-y;
+    border-radius: 0.9rem;
+  }
+
+  /*
+    The inline style sets min-height and max-height to the same duration-
+    derived value, so by default the box is pinned to exactly that height
+    (clipping any overflow text) — identical to a fixed height. On hover,
+    only max-height changes (see below); min-height keeps the block from
+    ever shrinking below its time-slot size.
+  */
+  .event-block {
+    position: absolute;
+    left: 0.2rem;
+    right: 0.2rem;
+    box-sizing: border-box;
+    border-radius: 0.6rem;
+    border-left: 3px solid #db5461;
+    background: #e3f2fd;
+    padding: 0.15rem 0.4rem;
+    font-size: 0.7rem;
+    line-height: 1.25;
+    overflow: hidden;
+    transition: max-height 0.25s ease-in-out, box-shadow 0.15s ease;
+  }
+
+  /* raising the max-height cap lets the box grow to fit its full text,
+     animated smoothly; it settles at the text's natural height rather than
+     the cap itself, so short entries don't gain extra blank space */
+  .event-block:hover {
+    max-height: 20rem;
+    z-index: 5;
+    box-shadow: 0 2px 10px rgba(74, 75, 70, 0.25);
+  }
+
+  .event-time {
+    display: block;
+    font-size: 0.62rem;
+    color: #686963;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .event-title {
+    display: block;
+    font-weight: 600;
+    color: #4a4b46;
+  }
+
+  @media (max-width: 40rem) {
+    .hour-label {
+      font-size: 0.55rem;
+    }
+
+    .chip,
+    .cell-weekday,
+    .cell-num {
+      font-size: 0.62rem;
+    }
+  }
+</style>
