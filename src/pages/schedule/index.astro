@@ -34,14 +34,14 @@ const schedules = [{ href: '/schedule/toronto-2026', label: 'Toronto 2026' }];
   }
 
   main {
-    max-width: 62rem;
+    max-width: 72rem;
     margin: 0 auto;
-    padding: 2.5rem 1.5rem 4rem;
+    padding: 3rem 2rem 5rem;
   }
 
   h1 {
-    margin: 0 0 1.5rem;
-    font-size: 1.3rem;
+    margin: 0 0 1.8rem;
+    font-size: 1.6rem;
     font-weight: 600;
   }
 
@@ -49,13 +49,25 @@ const schedules = [{ href: '/schedule/toronto-2026', label: 'Toronto 2026' }];
     margin: 0;
     padding: 0;
     list-style: none;
+    font-size: 1.05rem;
   }
 
   li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.7rem;
   }
 
   a {
     color: #000;
+  }
+
+  @media (min-width: 75rem) {
+    :global(html) {
+      font-size: 18px;
+    }
+
+    main {
+      max-width: 90rem;
+      padding: 4rem 4rem 6rem;
+    }
   }
 </style>
